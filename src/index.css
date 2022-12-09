@@ -1,0 +1,61 @@
+html,
+#root,
+body {
+  height: 100vh;
+  width: 100vw;
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+.App {
+  display: grid;
+  grid-template-columns: 3fr 1fr;
+  height: 100%;
+}
+
+.workspace {
+  grid-column: 1 / 2;
+  height: 100%;
+}
+
+.pane {
+  grid-column: 2/3;
+  height: 100%;
+  border-left: 1px solid black;
+
+  display: flex;
+  flex-flow: column nowrap;
+  align-items: center;
+  flex: 1;
+}
+
+.options {
+  display: flex;
+  flex-flow: column nowrap;
+  flex: 1;
+}
+
+.choice {
+  cursor: grab;
+  border: 1px solid rgba(0, 0, 0, 0);
+}
+
+.choice:hover {
+  border: 1px solid black;
+}
+
+.title {
+  border: 1px solid black;
+  text-align: center;
+  font-size: 2rem;
+}
+
+.main-title {
+  font-size: 3rem;
+}
+
+.row {
+  display: flex;
+  flex-flow: row nowrap;
+}
