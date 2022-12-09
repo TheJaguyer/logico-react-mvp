@@ -6,6 +6,7 @@ body {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
+  color-scheme: dark;
 }
 
 .App {
@@ -17,6 +18,23 @@ body {
 .workspace {
   grid-column: 1 / 2;
   height: 100%;
+}
+
+.piece {
+  display: flex;
+  flex-flow: column;
+  position: absolute;
+  width: 50px;
+  height: 50px;
+
+  justify-content: center;
+  align-items: center;
+
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+
+  cursor: pointer;
 }
 
 .pane {

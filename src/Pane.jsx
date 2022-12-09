@@ -1,4 +1,4 @@
-import Options from './Options.jsx';
+import Options from './pane-comps/Options.jsx';
 
 export default function Pane() {
   return (
