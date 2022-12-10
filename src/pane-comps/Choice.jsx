@@ -12,11 +12,11 @@ export default function Choice(props) {
     <div
       draggable
       className="choice"
-      id={props.item}
+      id={props.name}
       onDragStart={(e) => handleDragStart(e)}
       onDragEnd={(e) => handleDragEnd(e)}
     >
-      {props.item}
+      {props.name}
     </div>
   );
 }
