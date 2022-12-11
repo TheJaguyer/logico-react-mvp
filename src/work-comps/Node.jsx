@@ -1,11 +1,30 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 function Input(props) {
+  const [sister, setSister] = useState('');
+  function flip() {
+    props.set((prev) => !prev);
+  }
+
+  useEffect(() => {
+    try {
+      props.set(props.nodes[sister]);
+    } catch {
+      return;
+    }
+  }, [props.onNode]);
+
+  function onLineEnd() {
+    props.endLine(props.serial);
+    setSister(props.newLine.startNode);
+  }
+
   return (
     <div
-      id={props.id}
+      id={props.serial}
       className="node"
-      onClick={() => props.set((prev) => !prev)}
+      onClick={flip}
+      onMouseUp={onLineEnd}
       style={{
         left: props.pos[0] - 5,
         top: props.pos[1] - 5,
@@ -21,8 +40,9 @@ function Input(props) {
 function Output(props) {
   return (
     <div
-      id={props.id}
+      id={props.serial}
       className="node"
+      onMouseDown={(e) => props.startLine(props.serial, e, props.on)}
       style={{
         left: props.pos[0] - 5,
         top: props.pos[1] - 5,

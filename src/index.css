@@ -18,6 +18,13 @@ body {
 .workspace {
   grid-column: 1 / 2;
   height: 100%;
+  margin: 0;
+  padding: 0;
+}
+
+.svg {
+  height: 99vh;
+  width: 100%;
 }
 
 .piece {
@@ -35,13 +42,21 @@ body {
   cursor: grab;
 }
 
-.IO {
+.output {
+  position: absolute;
+  height: 30px;
+  width: 30px;
+  border: 3px solid white;
+  transform: rotate(45deg);
+  cursor: pointer;
+}
+.input {
   position: absolute;
   height: 30px;
   width: 30px;
   border: 3px solid white;
   border-radius: 200px;
-  cursor: grab;
+  cursor: pointer;
 }
 
 .line {
