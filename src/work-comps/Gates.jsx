@@ -2,19 +2,10 @@ import { useState, useEffect } from 'react';
 import Node from './Node.jsx';
 
 function AND(props) {
-  const [A, setA] = useState(props.nodes['A input ' + props.serial] || false);
-  const [B, setB] = useState(props.nodes['B input ' + props.serial] || false);
-  const [out, setOut] = useState(props.nodes['output ' + props.serial] || false);
+  const [A, setA] = useState(false);
+  const [B, setB] = useState(false);
+  const [out, setOut] = useState(false);
   const [hovered, setHovered] = useState(false);
-
-  useEffect(() => {
-    props.setNodes({
-      ...props.nodes,
-      ['A input ' + props.serial]: A,
-      ['B input ' + props.serial]: B,
-      ['output ' + props.serial]: out,
-    });
-  }, [A, B, out]);
 
   function logic() {
     setOut(A && B);
@@ -50,31 +41,14 @@ function AND(props) {
       onMouseLeave={() => setHovered(false)}
       onContextMenu={handleDelete}
     >
-      <Node.Input
-        {...Aprops}
-        endLine={props.endLine}
-        nodes={props.nodes}
-        setNodes={props.setNodes}
-        onNode={props.onNode}
-        newLine={props.newLine}
-      />
-      <Node.Input
-        {...Bprops}
-        endLine={props.endLine}
-        nodes={props.nodes}
-        setNodes={props.setNodes}
-        onNode={props.onNode}
-      />
-      <Node.Output
-        {...Outprops}
-        startLine={props.startLine}
-        nodes={props.nodes}
-        setNodes={props.setNodes}
-        onNode={props.onNode}
-      />
+      <Node.Input {...Aprops} endLine={props.endLine} />
+      <Node.Input {...Bprops} endLine={props.endLine} />
+      <Node.Output {...Outprops} startLine={props.startLine} />
     </div>
   );
 }
+
+/* ======================== Start Above ======================== */
 
 function OR(props) {
   const [A, setA] = useState(props.nodes['A input ' + props.serial] || false);

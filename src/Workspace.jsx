@@ -11,7 +11,6 @@ export default function Workspace() {
   const [serial, setSerial] = useState(0);
   const [lines, setLines] = useState([]);
   const [newLine, setNewLine] = useState(false);
-  const [onNode, setOnNode] = useState(false);
 
   function setNodes(newNodes) {
     nodes = newNodes;
@@ -110,11 +109,6 @@ export default function Workspace() {
                 remove={removePiece}
                 startLine={startLine}
                 endLine={endLine}
-                setNodes={setNodes}
-                nodes={nodes}
-                linesList={linesList}
-                onNode={onNode}
-                newLine={newLine}
               />
             );
           case 'OR':
@@ -127,7 +121,6 @@ export default function Workspace() {
                 endLine={endLine}
                 setNodes={setNodes}
                 nodes={nodes}
-                linesList={linesList}
               />
             );
           case 'BUFFER':
@@ -140,7 +133,6 @@ export default function Workspace() {
                 endLine={endLine}
                 setNodes={setNodes}
                 nodes={nodes}
-                linesList={linesList}
               />
             );
           case 'NAND':
@@ -153,7 +145,6 @@ export default function Workspace() {
                 endLine={endLine}
                 setNodes={setNodes}
                 nodes={nodes}
-                linesList={linesList}
               />
             );
           case 'NOR':
@@ -166,7 +157,6 @@ export default function Workspace() {
                 endLine={endLine}
                 setNodes={setNodes}
                 nodes={nodes}
-                linesList={linesList}
               />
             );
           case 'NOT':
@@ -179,7 +169,6 @@ export default function Workspace() {
                 endLine={endLine}
                 setNodes={setNodes}
                 nodes={nodes}
-                linesList={linesList}
               />
             );
           case 'XNOR':
@@ -192,7 +181,6 @@ export default function Workspace() {
                 endLine={endLine}
                 setNodes={setNodes}
                 nodes={nodes}
-                linesList={linesList}
               />
             );
           case 'XOR':
@@ -205,7 +193,6 @@ export default function Workspace() {
                 endLine={endLine}
                 setNodes={setNodes}
                 nodes={nodes}
-                linesList={linesList}
               />
             );
           case 'INPUT':
@@ -218,8 +205,6 @@ export default function Workspace() {
                 endLine={endLine}
                 setNodes={setNodes}
                 nodes={nodes}
-                linesList={linesList}
-                setOnNode={setOnNode}
               />
             );
           case 'OUTPUT':
@@ -232,24 +217,13 @@ export default function Workspace() {
                 endLine={endLine}
                 setNodes={setNodes}
                 nodes={nodes}
-                linesList={linesList}
               />
             );
         }
       })}
       <svg className="svg">
         {lines.map((item, index) => (
-          <Line
-            key={Date.now() + index + 'line'}
-            {...item}
-            remove={removeLine}
-            pieces={pieces}
-            nodes={nodes}
-            setNodes={setNodes}
-            onNode={onNode}
-            setLinesList={setLinesList}
-            linesList={linesList}
-          />
+          <Line key={Date.now() + index + 'line'} {...item} remove={removeLine} pieces={pieces} nodes={nodes} />
         ))}
         {newLine ? <TempLine {...newLine} /> : null}
       </svg>

@@ -20,10 +20,6 @@ export default function Line(props) {
     }
   }, [props.onNode]);
 
-  useEffect(() => {
-    props.setLinesList({ ...props.linesList, [props.endNode]: on });
-  }, [on]);
-
   function handleDelete() {
     props.remove(props.serial);
   }
