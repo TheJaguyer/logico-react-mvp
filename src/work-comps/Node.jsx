@@ -1,18 +1,14 @@
 function Input(props) {
   function flip() {
+    console.log(`clicked node ${props.serial}`);
+    props.toggleNode(props.serial);
     props.set((prev) => !prev);
   }
-
-  function onLineEnd() {
-    props.endLine(props.serial);
-  }
-
   return (
     <div
       id={props.serial}
       className="node"
-      onClick={flip}
-      onMouseUp={onLineEnd}
+      // onClick={flip}
       style={{
         left: props.pos[0] - 5,
         top: props.pos[1] - 5,
@@ -30,7 +26,6 @@ function Output(props) {
     <div
       id={props.serial}
       className="node"
-      onMouseDown={(e) => props.startLine(props.serial, e, props.on)}
       style={{
         left: props.pos[0] - 5,
         top: props.pos[1] - 5,

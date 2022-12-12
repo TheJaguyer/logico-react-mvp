@@ -1,24 +1,17 @@
-import { useState, useEffect } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import Gates from './work-comps/Gates.jsx';
 import Line from './work-comps/Line.jsx';
 import TempLine from './work-comps/TempLine.jsx';
-
-var nodes = {};
-var linesList = {};
 
 export default function Workspace() {
   const [pieces, setPieces] = useState([]);
   const [serial, setSerial] = useState(0);
   const [lines, setLines] = useState([]);
   const [newLine, setNewLine] = useState(false);
+  const [count, setCount] = useState(0);
+  const nodes = useRef({});
 
-  function setNodes(newNodes) {
-    nodes = newNodes;
-  }
-
-  function setLinesList(newLines) {
-    linesList = newLines;
-  }
+  /* ========== Functions for Drag and Drop features ========== */
 
   // prevent the red symbol that means no drop
   function handleDragOver(e) {
@@ -35,6 +28,33 @@ export default function Workspace() {
       addPiece(e.dataTransfer.getData('Text'), X, Y);
     }
   }
+
+  /* ========== Functions for Nodes ========== */
+
+  function toggleNode(serial) {
+    nodes.current = { ...nodes.current, [serial]: !nodes.current[serial] };
+  }
+
+  function addNode(serial) {
+    if (!nodes.current[serial]) {
+      nodes.current = { ...nodes.current, [serial]: false };
+    }
+  }
+
+  function setNode(serial, bool) {
+    nodes.current = { ...nodes.current, [serial]: bool };
+  }
+
+  function connectNodes() {
+    for (let line of lines) {
+      console.log(`checking line ${line.serial}`);
+      setNode(line.endNode, nodes.current[line.startNode]);
+    }
+  }
+
+  connectNodes();
+
+  /* ========== Functions for Pieces ========== */
 
   function movePiece(props, X, Y) {
     let moved = JSON.parse(props);
@@ -56,11 +76,15 @@ export default function Workspace() {
     setSerial((prev) => prev + 1);
   }
 
-  function startLine(startNode, e) {
-    let X = e.pageX;
-    let Y = e.pageY;
-    setNewLine({ startNode: startNode, x: X, y: Y, serial: `line ${serial}` });
-    setSerial((prev) => prev + 1);
+  /* ========== Functions for Lines ========== */
+
+  function startLine(e) {
+    if (e.target.id.includes('output')) {
+      let X = e.pageX;
+      let Y = e.pageY;
+      setNewLine({ startNode: e.target.id, x: X, y: Y, serial: `line ${serial}` });
+      setSerial((prev) => prev + 1);
+    }
   }
 
   function follow(e) {
@@ -74,9 +98,13 @@ export default function Workspace() {
     }
   }
 
-  function endLine(endNode) {
-    if (newLine) {
-      let finalLine = { startNode: newLine.startNode, endNode: endNode, serial: newLine.serial };
+  function endLine(e) {
+    if (newLine && e.target.id.includes('input')) {
+      let finalLine = {
+        startNode: newLine.startNode,
+        endNode: e.target.id,
+        serial: newLine.serial,
+      };
       setLines((prev) => [...prev, finalLine]);
       setNewLine(false);
     } else {
@@ -84,11 +112,16 @@ export default function Workspace() {
     }
   }
 
-  function cancelLine(e) {
-    if (newLine && !e.target.id.includes('input')) {
-      setNewLine(false);
-    }
-  }
+  /* ========== Rendering ========== */
+
+  const gateProps = {
+    nodes,
+    toggleNode,
+    addNode,
+    setNode,
+    removePiece,
+    lines,
+  };
 
   return (
     <div
@@ -96,129 +129,56 @@ export default function Workspace() {
       onDragOver={(e) => handleDragOver(e)}
       onDrop={(e) => handleDrop(e)}
       onMouseMove={(e) => follow(e)}
-      onMouseUp={(e) => cancelLine(e)}
+      onMouseDown={(e) => startLine(e)}
+      onMouseUp={(e) => endLine(e)}
       onContextMenu={(e) => e.preventDefault()}
     >
       {pieces.map((item, index) => {
         switch (item.name) {
           case 'AND':
-            return (
-              <Gates.AND
-                key={Date.now() + index}
-                {...item}
-                remove={removePiece}
-                startLine={startLine}
-                endLine={endLine}
-              />
-            );
+            addNode('A input ' + item.serial);
+            addNode('B input ' + item.serial);
+            addNode('output ' + item.serial);
+            return <Gates.AND key={Date.now() + index} {...item} {...gateProps} />;
           case 'OR':
-            return (
-              <Gates.OR
-                key={Date.now() + index}
-                {...item}
-                remove={removePiece}
-                startLine={startLine}
-                endLine={endLine}
-                setNodes={setNodes}
-                nodes={nodes}
-              />
-            );
+            addNode('A input ' + item.serial);
+            addNode('B input ' + item.serial);
+            addNode('output ' + item.serial);
+            return <Gates.OR key={Date.now() + index} {...item} {...gateProps} />;
           case 'BUFFER':
-            return (
-              <Gates.BUFFER
-                key={Date.now() + index}
-                {...item}
-                remove={removePiece}
-                startLine={startLine}
-                endLine={endLine}
-                setNodes={setNodes}
-                nodes={nodes}
-              />
-            );
+            addNode('A input ' + item.serial);
+            addNode('output ' + item.serial);
+            return <Gates.BUFFER key={Date.now() + index} {...item} {...gateProps} />;
           case 'NAND':
-            return (
-              <Gates.NAND
-                key={Date.now() + index}
-                {...item}
-                remove={removePiece}
-                startLine={startLine}
-                endLine={endLine}
-                setNodes={setNodes}
-                nodes={nodes}
-              />
-            );
+            addNode('A input ' + item.serial);
+            addNode('B input ' + item.serial);
+            addNode('output ' + item.serial);
+            return <Gates.NAND key={Date.now() + index} {...item} {...gateProps} />;
           case 'NOR':
-            return (
-              <Gates.NOR
-                key={Date.now() + index}
-                {...item}
-                remove={removePiece}
-                startLine={startLine}
-                endLine={endLine}
-                setNodes={setNodes}
-                nodes={nodes}
-              />
-            );
+            addNode('A input ' + item.serial);
+            addNode('B input ' + item.serial);
+            addNode('output ' + item.serial);
+            return <Gates.NOR key={Date.now() + index} {...item} {...gateProps} />;
           case 'NOT':
-            return (
-              <Gates.NOT
-                key={Date.now() + index}
-                {...item}
-                remove={removePiece}
-                startLine={startLine}
-                endLine={endLine}
-                setNodes={setNodes}
-                nodes={nodes}
-              />
-            );
+            addNode('A input ' + item.serial);
+            addNode('output ' + item.serial);
+            return <Gates.NOT key={Date.now() + index} {...item} {...gateProps} />;
           case 'XNOR':
-            return (
-              <Gates.XNOR
-                key={Date.now() + index}
-                {...item}
-                remove={removePiece}
-                startLine={startLine}
-                endLine={endLine}
-                setNodes={setNodes}
-                nodes={nodes}
-              />
-            );
+            addNode('A input ' + item.serial);
+            addNode('B input ' + item.serial);
+            addNode('output ' + item.serial);
+            return <Gates.XNOR key={Date.now() + index} {...item} {...gateProps} />;
           case 'XOR':
-            return (
-              <Gates.XOR
-                key={Date.now() + index}
-                {...item}
-                remove={removePiece}
-                startLine={startLine}
-                endLine={endLine}
-                setNodes={setNodes}
-                nodes={nodes}
-              />
-            );
+            addNode('A input ' + item.serial);
+            addNode('B input ' + item.serial);
+            addNode('output ' + item.serial);
+            return <Gates.XOR key={Date.now() + index} {...item} {...gateProps} />;
           case 'INPUT':
-            return (
-              <Gates.INPUT
-                key={Date.now() + index}
-                {...item}
-                remove={removePiece}
-                startLine={startLine}
-                endLine={endLine}
-                setNodes={setNodes}
-                nodes={nodes}
-              />
-            );
+            addNode('output ' + item.serial);
+            return <Gates.INPUT key={Date.now() + index} {...item} {...gateProps} setCount={setCount} />;
           case 'OUTPUT':
-            return (
-              <Gates.OUTPUT
-                key={Date.now() + index}
-                {...item}
-                remove={removePiece}
-                startLine={startLine}
-                endLine={endLine}
-                setNodes={setNodes}
-                nodes={nodes}
-              />
-            );
+            addNode('A input ' + item.serial);
+            return <Gates.OUTPUT key={Date.now() + index} {...item} {...gateProps} />;
         }
       })}
       <svg className="svg">

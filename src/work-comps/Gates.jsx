@@ -2,32 +2,62 @@ import { useState, useEffect } from 'react';
 import Node from './Node.jsx';
 
 function AND(props) {
-  const [A, setA] = useState(false);
-  const [B, setB] = useState(false);
-  const [out, setOut] = useState(false);
-  const [hovered, setHovered] = useState(false);
+  let nodeA = 'A input ' + props.serial;
+  let nodeB = 'B input ' + props.serial;
+  let outNode = 'output ' + props.serial;
 
-  function logic() {
-    setOut(A && B);
-  }
+  const [hovered, setHovered] = useState(false);
+  const [out, setOut] = useState(false);
+  const [A, setA] = useState(props.nodes.current[nodeA] || false);
+  const [B, setB] = useState(props.nodes.current[nodeB] || false);
 
   function handleDragStart(e) {
     e.target.style.opacity = '0.5';
     e.dataTransfer.setData('props', JSON.stringify(props));
   }
+
   function handleDragEnd(e) {
     e.target.style.opacity = '1';
   }
 
   function handleDelete() {
-    props.remove(props.serial);
+    props.removePiece(props.serial);
   }
 
-  const Aprops = { on: A, set: setA, hovered, pos: [5, 18], serial: 'A input ' + props.serial };
-  const Bprops = { on: B, set: setB, hovered, pos: [5, 30], serial: 'B input ' + props.serial };
-  const Outprops = { on: out, hovered, pos: [52, 24], serial: 'output ' + props.serial };
+  function logic() {
+    return props.nodes.current[nodeA] && props.nodes.current[nodeB];
+  }
 
-  useEffect(() => logic(), [A, B]);
+  useEffect(() => {
+    props.setNode(outNode, logic());
+    setOut(logic());
+  }, [A, B]);
+
+  const Aprops = {
+    on: A,
+    set: setA,
+    hovered: hovered,
+    pos: [5, 18],
+    serial: nodeA,
+    nodes: props.nodes,
+    toggleNode: props.toggleNode,
+  };
+  const Bprops = {
+    on: B,
+    set: setB,
+    hovered: hovered,
+    pos: [5, 30],
+    serial: nodeB,
+    nodes: props.nodes,
+    toggleNode: props.toggleNode,
+  };
+  const Outprops = {
+    on: out,
+    hovered: hovered,
+    pos: [52, 24],
+    serial: outNode,
+    nodes: props.nodes,
+  };
 
   return (
     <div
@@ -48,44 +78,63 @@ function AND(props) {
   );
 }
 
-/* ======================== Start Above ======================== */
-
 function OR(props) {
-  const [A, setA] = useState(props.nodes['A input ' + props.serial] || false);
-  const [B, setB] = useState(props.nodes['B input ' + props.serial] || false);
-  const [out, setOut] = useState(props.nodes['output ' + props.serial] || false);
+  let nodeA = 'A input ' + props.serial;
+  let nodeB = 'B input ' + props.serial;
+  let outNode = 'output ' + props.serial;
+
   const [hovered, setHovered] = useState(false);
-
-  useEffect(() => {
-    props.setNodes({
-      ...props.nodes,
-      ['A input ' + props.serial]: A,
-      ['B input ' + props.serial]: B,
-      ['output ' + props.serial]: out,
-    });
-  }, [A, B, out]);
-
-  useEffect(() => logic(), [A, B]);
-
-  function logic() {
-    setOut(A || B);
-  }
+  const [out, setOut] = useState(false);
+  const [A, setA] = useState(props.nodes.current[nodeA] || false);
+  const [B, setB] = useState(props.nodes.current[nodeB] || false);
 
   function handleDragStart(e) {
     e.target.style.opacity = '0.5';
     e.dataTransfer.setData('props', JSON.stringify(props));
   }
+
   function handleDragEnd(e) {
     e.target.style.opacity = '1';
   }
 
   function handleDelete() {
-    props.remove(props.serial);
+    props.removePiece(props.serial);
   }
 
-  const Aprops = { on: A, set: setA, hovered, pos: [5, 18], serial: 'A input ' + props.serial };
-  const Bprops = { on: B, set: setB, hovered, pos: [5, 30], serial: 'B input ' + props.serial };
-  const Outprops = { on: out, hovered, pos: [52, 24], serial: 'output ' + props.serial };
+  function logic() {
+    return props.nodes.current[nodeA] || props.nodes.current[nodeB];
+  }
+
+  useEffect(() => {
+    props.setNode(outNode, logic());
+    setOut(logic());
+  }, [A, B]);
+
+  const Aprops = {
+    on: A,
+    set: setA,
+    hovered: hovered,
+    pos: [5, 18],
+    serial: nodeA,
+    nodes: props.nodes,
+    toggleNode: props.toggleNode,
+  };
+  const Bprops = {
+    on: B,
+    set: setB,
+    hovered: hovered,
+    pos: [5, 30],
+    serial: nodeB,
+    nodes: props.nodes,
+    toggleNode: props.toggleNode,
+  };
+  const Outprops = {
+    on: out,
+    hovered: hovered,
+    pos: [52, 24],
+    serial: outNode,
+    nodes: props.nodes,
+  };
 
   return (
     <div
@@ -99,46 +148,59 @@ function OR(props) {
       onMouseLeave={() => setHovered(false)}
       onContextMenu={handleDelete}
     >
-      <Node.Input {...Aprops} endLine={props.endLine} nodes={props.nodes} setNodes={props.setNodes} />
-      <Node.Input {...Bprops} endLine={props.endLine} nodes={props.nodes} setNodes={props.setNodes} />
-      <Node.Output {...Outprops} startLine={props.startLine} nodes={props.nodes} setNodes={props.setNodes} />
+      <Node.Input {...Aprops} endLine={props.endLine} />
+      <Node.Input {...Bprops} endLine={props.endLine} />
+      <Node.Output {...Outprops} startLine={props.startLine} />
     </div>
   );
 }
 
 function BUFFER(props) {
-  const [A, setA] = useState(props.nodes['A input ' + props.serial] || false);
-  const [out, setOut] = useState(props.nodes['output ' + props.serial] || false);
+  let nodeA = 'A input ' + props.serial;
+  let outNode = 'output ' + props.serial;
+
   const [hovered, setHovered] = useState(false);
-
-  useEffect(() => {
-    props.setNodes({
-      ...props.nodes,
-      ['A input ' + props.serial]: A,
-      ['output ' + props.serial]: out,
-    });
-  }, [A, out]);
-
-  useEffect(() => logic(), [A]);
-
-  function logic() {
-    setOut(A);
-  }
+  const [out, setOut] = useState(false);
+  const [A, setA] = useState(props.nodes.current[nodeA] || false);
 
   function handleDragStart(e) {
     e.target.style.opacity = '0.5';
     e.dataTransfer.setData('props', JSON.stringify(props));
   }
+
   function handleDragEnd(e) {
     e.target.style.opacity = '1';
   }
 
   function handleDelete() {
-    props.remove(props.serial);
+    props.removePiece(props.serial);
   }
 
-  const Aprops = { on: A, set: setA, hovered, pos: [5, 24], serial: 'A input ' + props.serial };
-  const Outprops = { on: out, hovered, pos: [52, 24], serial: 'output ' + props.serial };
+  function logic() {
+    return props.nodes.current[nodeA];
+  }
+
+  useEffect(() => {
+    props.setNode(outNode, logic());
+    setOut(logic());
+  }, [A]);
+
+  const Aprops = {
+    on: A,
+    set: setA,
+    hovered: hovered,
+    pos: [5, 24],
+    serial: nodeA,
+    nodes: props.nodes,
+    toggleNode: props.toggleNode,
+  };
+  const Outprops = {
+    on: out,
+    hovered: hovered,
+    pos: [52, 24],
+    serial: outNode,
+    nodes: props.nodes,
+  };
 
   return (
     <div
@@ -152,48 +214,69 @@ function BUFFER(props) {
       onMouseLeave={() => setHovered(false)}
       onContextMenu={handleDelete}
     >
-      <Node.Input {...Aprops} endLine={props.endLine} nodes={props.nodes} setNodes={props.setNodes} />
-      <Node.Output {...Outprops} startLine={props.startLine} nodes={props.nodes} setNodes={props.setNodes} />
+      <Node.Input {...Aprops} endLine={props.endLine} />
+      <Node.Output {...Outprops} startLine={props.startLine} />
     </div>
   );
 }
 
 function NAND(props) {
-  const [A, setA] = useState(props.nodes['A input ' + props.serial] || false);
-  const [B, setB] = useState(props.nodes['B input ' + props.serial] || false);
-  const [out, setOut] = useState(props.nodes['output ' + props.serial] || false);
+  let nodeA = 'A input ' + props.serial;
+  let nodeB = 'B input ' + props.serial;
+  let outNode = 'output ' + props.serial;
+
   const [hovered, setHovered] = useState(false);
-
-  useEffect(() => {
-    props.setNodes({
-      ...props.nodes,
-      ['A input ' + props.serial]: A,
-      ['B input ' + props.serial]: B,
-      ['output ' + props.serial]: out,
-    });
-  }, [A, B, out]);
-
-  useEffect(() => logic(), [A, B]);
-
-  function logic() {
-    setOut(!(A && B));
-  }
+  const [out, setOut] = useState(false);
+  const [A, setA] = useState(props.nodes.current[nodeA] || false);
+  const [B, setB] = useState(props.nodes.current[nodeB] || false);
 
   function handleDragStart(e) {
     e.target.style.opacity = '0.5';
     e.dataTransfer.setData('props', JSON.stringify(props));
   }
+
   function handleDragEnd(e) {
     e.target.style.opacity = '1';
   }
 
   function handleDelete() {
-    props.remove(props.serial);
+    props.removePiece(props.serial);
   }
 
-  const Aprops = { on: A, set: setA, hovered, pos: [5, 18], serial: 'A input ' + props.serial };
-  const Bprops = { on: B, set: setB, hovered, pos: [5, 30], serial: 'B input ' + props.serial };
-  const Outprops = { on: out, hovered, pos: [52, 24], serial: 'output ' + props.serial };
+  function logic() {
+    return !(props.nodes.current[nodeA] && props.nodes.current[nodeB]);
+  }
+
+  useEffect(() => {
+    props.setNode(outNode, logic());
+    setOut(logic());
+  }, [A, B]);
+
+  const Aprops = {
+    on: A,
+    set: setA,
+    hovered: hovered,
+    pos: [5, 18],
+    serial: nodeA,
+    nodes: props.nodes,
+    toggleNode: props.toggleNode,
+  };
+  const Bprops = {
+    on: B,
+    set: setB,
+    hovered: hovered,
+    pos: [5, 30],
+    serial: nodeB,
+    nodes: props.nodes,
+    toggleNode: props.toggleNode,
+  };
+  const Outprops = {
+    on: out,
+    hovered: hovered,
+    pos: [52, 24],
+    serial: outNode,
+    nodes: props.nodes,
+  };
 
   return (
     <div
@@ -207,49 +290,70 @@ function NAND(props) {
       onMouseLeave={() => setHovered(false)}
       onContextMenu={handleDelete}
     >
-      <Node.Input {...Aprops} endLine={props.endLine} nodes={props.nodes} setNodes={props.setNodes} />
-      <Node.Input {...Bprops} endLine={props.endLine} nodes={props.nodes} setNodes={props.setNodes} />
-      <Node.Output {...Outprops} startLine={props.startLine} nodes={props.nodes} setNodes={props.setNodes} />
+      <Node.Input {...Aprops} endLine={props.endLine} />
+      <Node.Input {...Bprops} endLine={props.endLine} />
+      <Node.Output {...Outprops} startLine={props.startLine} />
     </div>
   );
 }
 
 function NOR(props) {
-  const [A, setA] = useState(props.nodes['A input ' + props.serial] || false);
-  const [B, setB] = useState(props.nodes['B input ' + props.serial] || false);
-  const [out, setOut] = useState(props.nodes['output ' + props.serial] || false);
+  let nodeA = 'A input ' + props.serial;
+  let nodeB = 'B input ' + props.serial;
+  let outNode = 'output ' + props.serial;
+
   const [hovered, setHovered] = useState(false);
-
-  useEffect(() => {
-    props.setNodes({
-      ...props.nodes,
-      ['A input ' + props.serial]: A,
-      ['B input ' + props.serial]: B,
-      ['output ' + props.serial]: out,
-    });
-  }, [A, B, out]);
-
-  useEffect(() => logic(), [A, B]);
-
-  function logic() {
-    setOut(!(A || B));
-  }
-
-  function handleDelete() {
-    props.remove(props.serial);
-  }
+  const [out, setOut] = useState(false);
+  const [A, setA] = useState(props.nodes.current[nodeA] || false);
+  const [B, setB] = useState(props.nodes.current[nodeB] || false);
 
   function handleDragStart(e) {
     e.target.style.opacity = '0.5';
     e.dataTransfer.setData('props', JSON.stringify(props));
   }
+
   function handleDragEnd(e) {
     e.target.style.opacity = '1';
   }
 
-  const Aprops = { on: A, set: setA, hovered, pos: [5, 18], serial: 'A input ' + props.serial };
-  const Bprops = { on: B, set: setB, hovered, pos: [5, 30], serial: 'B input ' + props.serial };
-  const Outprops = { on: out, hovered, pos: [52, 24], serial: 'output ' + props.serial };
+  function handleDelete() {
+    props.removePiece(props.serial);
+  }
+
+  function logic() {
+    return !(props.nodes.current[nodeA] || props.nodes.current[nodeB]);
+  }
+
+  useEffect(() => {
+    props.setNode(outNode, logic());
+    setOut(logic());
+  }, [A, B]);
+
+  const Aprops = {
+    on: A,
+    set: setA,
+    hovered: hovered,
+    pos: [5, 18],
+    serial: nodeA,
+    nodes: props.nodes,
+    toggleNode: props.toggleNode,
+  };
+  const Bprops = {
+    on: B,
+    set: setB,
+    hovered: hovered,
+    pos: [5, 30],
+    serial: nodeB,
+    nodes: props.nodes,
+    toggleNode: props.toggleNode,
+  };
+  const Outprops = {
+    on: out,
+    hovered: hovered,
+    pos: [52, 24],
+    serial: outNode,
+    nodes: props.nodes,
+  };
 
   return (
     <div
@@ -263,46 +367,59 @@ function NOR(props) {
       onMouseLeave={() => setHovered(false)}
       onContextMenu={handleDelete}
     >
-      <Node.Input {...Aprops} endLine={props.endLine} nodes={props.nodes} setNodes={props.setNodes} />
-      <Node.Input {...Bprops} endLine={props.endLine} nodes={props.nodes} setNodes={props.setNodes} />
-      <Node.Output {...Outprops} startLine={props.startLine} nodes={props.nodes} setNodes={props.setNodes} />
+      <Node.Input {...Aprops} endLine={props.endLine} />
+      <Node.Input {...Bprops} endLine={props.endLine} />
+      <Node.Output {...Outprops} startLine={props.startLine} />
     </div>
   );
 }
 
 function NOT(props) {
-  const [A, setA] = useState(props.nodes['A input ' + props.serial] || false);
-  const [out, setOut] = useState(props.nodes['output ' + props.serial] || false);
+  let nodeA = 'A input ' + props.serial;
+  let outNode = 'output ' + props.serial;
+
   const [hovered, setHovered] = useState(false);
-
-  useEffect(() => {
-    props.setNodes({
-      ...props.nodes,
-      ['A input ' + props.serial]: A,
-      ['output ' + props.serial]: out,
-    });
-  }, [A, out]);
-
-  useEffect(() => logic(), [A]);
-
-  function logic() {
-    setOut(!A);
-  }
-
-  function handleDelete() {
-    props.remove(props.serial);
-  }
+  const [out, setOut] = useState(false);
+  const [A, setA] = useState(props.nodes.current[nodeA] || false);
 
   function handleDragStart(e) {
     e.target.style.opacity = '0.5';
     e.dataTransfer.setData('props', JSON.stringify(props));
   }
+
   function handleDragEnd(e) {
     e.target.style.opacity = '1';
   }
 
-  const Aprops = { on: A, set: setA, hovered, pos: [5, 24], serial: 'A input ' + props.serial };
-  const Outprops = { on: out, hovered, pos: [52, 24], serial: 'output ' + props.serial };
+  function handleDelete() {
+    props.removePiece(props.serial);
+  }
+
+  function logic() {
+    return !props.nodes.current[nodeA];
+  }
+
+  useEffect(() => {
+    props.setNode(outNode, logic());
+    setOut(logic());
+  }, [A]);
+
+  const Aprops = {
+    on: A,
+    set: setA,
+    hovered: hovered,
+    pos: [5, 24],
+    serial: nodeA,
+    nodes: props.nodes,
+    toggleNode: props.toggleNode,
+  };
+  const Outprops = {
+    on: out,
+    hovered: hovered,
+    pos: [52, 24],
+    serial: outNode,
+    nodes: props.nodes,
+  };
 
   return (
     <div
@@ -316,48 +433,69 @@ function NOT(props) {
       onMouseLeave={() => setHovered(false)}
       onContextMenu={handleDelete}
     >
-      <Node.Input {...Aprops} endLine={props.endLine} nodes={props.nodes} setNodes={props.setNodes} />
-      <Node.Output {...Outprops} startLine={props.startLine} nodes={props.nodes} setNodes={props.setNodes} />
+      <Node.Input {...Aprops} endLine={props.endLine} />
+      <Node.Output {...Outprops} startLine={props.startLine} />
     </div>
   );
 }
 
 function XNOR(props) {
-  const [A, setA] = useState(props.nodes['A input ' + props.serial] || false);
-  const [B, setB] = useState(props.nodes['B input ' + props.serial] || false);
-  const [out, setOut] = useState(props.nodes['output ' + props.serial] || false);
+  let nodeA = 'A input ' + props.serial;
+  let nodeB = 'B input ' + props.serial;
+  let outNode = 'output ' + props.serial;
+
   const [hovered, setHovered] = useState(false);
-
-  useEffect(() => {
-    props.setNodes({
-      ...props.nodes,
-      ['A input ' + props.serial]: A,
-      ['B input ' + props.serial]: B,
-      ['output ' + props.serial]: out,
-    });
-  }, [A, B, out]);
-
-  useEffect(() => logic(), [A, B]);
-
-  function logic() {
-    setOut(A === B);
-  }
+  const [out, setOut] = useState(false);
+  const [A, setA] = useState(props.nodes.current[nodeA] || false);
+  const [B, setB] = useState(props.nodes.current[nodeB] || false);
 
   function handleDragStart(e) {
     e.target.style.opacity = '0.5';
     e.dataTransfer.setData('props', JSON.stringify(props));
   }
+
   function handleDragEnd(e) {
     e.target.style.opacity = '1';
   }
 
   function handleDelete() {
-    props.remove(props.serial);
+    props.removePiece(props.serial);
   }
 
-  const Aprops = { on: A, set: setA, hovered, pos: [5, 18], serial: 'A input ' + props.serial };
-  const Bprops = { on: B, set: setB, hovered, pos: [5, 30], serial: 'B input ' + props.serial };
-  const Outprops = { on: out, hovered, pos: [52, 24], serial: 'output ' + props.serial };
+  function logic() {
+    return props.nodes.current[nodeA] === props.nodes.current[nodeB];
+  }
+
+  useEffect(() => {
+    props.setNode(outNode, logic());
+    setOut(logic());
+  }, [A, B]);
+
+  const Aprops = {
+    on: A,
+    set: setA,
+    hovered: hovered,
+    pos: [5, 18],
+    serial: nodeA,
+    nodes: props.nodes,
+    toggleNode: props.toggleNode,
+  };
+  const Bprops = {
+    on: B,
+    set: setB,
+    hovered: hovered,
+    pos: [5, 30],
+    serial: nodeB,
+    nodes: props.nodes,
+    toggleNode: props.toggleNode,
+  };
+  const Outprops = {
+    on: out,
+    hovered: hovered,
+    pos: [52, 24],
+    serial: outNode,
+    nodes: props.nodes,
+  };
 
   return (
     <div
@@ -371,49 +509,70 @@ function XNOR(props) {
       onMouseLeave={() => setHovered(false)}
       onContextMenu={handleDelete}
     >
-      <Node.Input {...Aprops} endLine={props.endLine} nodes={props.nodes} setNodes={props.setNodes} />
-      <Node.Input {...Bprops} endLine={props.endLine} nodes={props.nodes} setNodes={props.setNodes} />
-      <Node.Output {...Outprops} startLine={props.startLine} nodes={props.nodes} setNodes={props.setNodes} />
+      <Node.Input {...Aprops} endLine={props.endLine} />
+      <Node.Input {...Bprops} endLine={props.endLine} />
+      <Node.Output {...Outprops} startLine={props.startLine} />
     </div>
   );
 }
 
 function XOR(props) {
-  const [A, setA] = useState(props.nodes['A input ' + props.serial] || false);
-  const [B, setB] = useState(props.nodes['B input ' + props.serial] || false);
-  const [out, setOut] = useState(props.nodes['output ' + props.serial] || false);
+  let nodeA = 'A input ' + props.serial;
+  let nodeB = 'B input ' + props.serial;
+  let outNode = 'output ' + props.serial;
+
   const [hovered, setHovered] = useState(false);
-
-  useEffect(() => {
-    props.setNodes({
-      ...props.nodes,
-      ['A input ' + props.serial]: A,
-      ['B input ' + props.serial]: B,
-      ['output ' + props.serial]: out,
-    });
-  }, [A, B, out]);
-
-  useEffect(() => logic(), [A, B]);
-
-  function logic() {
-    setOut(A ? !B : B);
-  }
+  const [out, setOut] = useState(false);
+  const [A, setA] = useState(props.nodes.current[nodeA] || false);
+  const [B, setB] = useState(props.nodes.current[nodeB] || false);
 
   function handleDragStart(e) {
     e.target.style.opacity = '0.5';
     e.dataTransfer.setData('props', JSON.stringify(props));
   }
+
   function handleDragEnd(e) {
     e.target.style.opacity = '1';
   }
 
   function handleDelete() {
-    props.remove(props.serial);
+    props.removePiece(props.serial);
   }
 
-  const Aprops = { on: A, set: setA, hovered, pos: [5, 18], serial: 'A input ' + props.serial };
-  const Bprops = { on: B, set: setB, hovered, pos: [5, 30], serial: 'B input ' + props.serial };
-  const Outprops = { on: out, hovered, pos: [52, 24], serial: 'output ' + props.serial };
+  function logic() {
+    return props.nodes.current[nodeA] ? !props.nodes.current[nodeB] : props.nodes.current[nodeB];
+  }
+
+  useEffect(() => {
+    props.setNode(outNode, logic());
+    setOut(logic());
+  }, [A, B]);
+
+  const Aprops = {
+    on: A,
+    set: setA,
+    hovered: hovered,
+    pos: [5, 18],
+    serial: nodeA,
+    nodes: props.nodes,
+    toggleNode: props.toggleNode,
+  };
+  const Bprops = {
+    on: B,
+    set: setB,
+    hovered: hovered,
+    pos: [5, 30],
+    serial: nodeB,
+    nodes: props.nodes,
+    toggleNode: props.toggleNode,
+  };
+  const Outprops = {
+    on: out,
+    hovered: hovered,
+    pos: [52, 24],
+    serial: outNode,
+    nodes: props.nodes,
+  };
 
   return (
     <div
@@ -427,23 +586,18 @@ function XOR(props) {
       onMouseLeave={() => setHovered(false)}
       onContextMenu={handleDelete}
     >
-      <Node.Input {...Aprops} endLine={props.endLine} nodes={props.nodes} setNodes={props.setNodes} />
-      <Node.Input {...Bprops} endLine={props.endLine} nodes={props.nodes} setNodes={props.setNodes} />
-      <Node.Output {...Outprops} startLine={props.startLine} nodes={props.nodes} setNodes={props.setNodes} />
+      <Node.Input {...Aprops} endLine={props.endLine} />
+      <Node.Input {...Bprops} endLine={props.endLine} />
+      <Node.Output {...Outprops} startLine={props.startLine} />
     </div>
   );
 }
 
 function INPUT(props) {
-  const [out, setOut] = useState(props.nodes['output ' + props.serial] || false);
-  const [hovered, setHovered] = useState(false);
+  let outNode = 'output ' + props.serial;
 
-  useEffect(() => {
-    props.setNodes({
-      ...props.nodes,
-      ['output ' + props.serial]: out,
-    });
-  }, [out]);
+  const [hovered, setHovered] = useState(false);
+  const [out, setOut] = useState(props.nodes.current[outNode] || false);
 
   function handleDragStart(e) {
     e.target.style.opacity = '0.5';
@@ -457,43 +611,53 @@ function INPUT(props) {
     props.remove(props.serial);
   }
 
-  const Outprops = { on: out, hovered, pos: [30, 14], serial: 'output ' + props.serial };
+  useEffect(() => {
+    props.setNode(outNode, out);
+    setOut(out);
+  }, [out]);
+
+  const Outprops = {
+    on: out,
+    hovered: hovered,
+    pos: [14, 14],
+    serial: outNode,
+    nodes: props.nodes,
+  };
+
+  function handleClick() {
+    setOut((prev) => !prev);
+    props.setNode(outNode, out);
+  }
+
+  function triggerUpdate() {
+    props.setCount((prev) => prev + 1);
+  }
 
   return (
     <div
-      id={'input ' + props.serial}
+      id={'INPUT ' + props.serial}
       style={{ top: props.y, left: props.x, backgroundColor: out ? 'red' : 'black' }}
       className="input"
       draggable={hovered ? true : false}
       onDragStart={(e) => handleDragStart(e)}
       onDragEnd={(e) => handleDragEnd(e)}
-      onMouseEnter={() => {
-        setHovered(true);
-        props.setOnNode(true);
-      }}
-      onMouseLeave={() => {
-        setHovered(false);
-        props.setOnNode(false);
-      }}
+      onMouseEnter={() => setHovered(true)}
+      onMouseLeave={() => setHovered(false)}
       onContextMenu={handleDelete}
-      onClick={() => setOut((prev) => !prev)}
+      onMouseDown={handleClick}
+      onMouseUp={triggerUpdate}
     >
-      <Node.Output {...Outprops} startLine={props.startLine} nodes={props.nodes} setNodes={props.setNodes} />
+      <Node.Output {...Outprops} startLine={props.startLine} />
     </div>
   );
 }
 
 function OUTPUT(props) {
-  const [A, setA] = useState(props.nodes['A input ' + props.serial] || false);
-  const [out, setOut] = useState(props.nodes['output ' + props.serial] || false);
-  const [hovered, setHovered] = useState(false);
+  let nodeA = 'A input ' + props.serial;
 
-  useEffect(() => {
-    props.setNodes({
-      ...props.nodes,
-      ['A input ' + props.serial]: A,
-    });
-  }, [A]);
+  const [hovered, setHovered] = useState(false);
+  const [out, setOut] = useState(false);
+  const [A, setA] = useState(props.nodes.current[nodeA] || false);
 
   useEffect(() => logic(), [A]);
 
@@ -513,11 +677,19 @@ function OUTPUT(props) {
     props.remove(props.serial);
   }
 
-  const Aprops = { on: A, set: setA, hovered, pos: [-3, 31], serial: 'A input ' + props.serial };
+  const Aprops = {
+    on: A,
+    set: setA,
+    hovered: hovered,
+    pos: [14, 14],
+    serial: nodeA,
+    nodes: props.nodes,
+    toggleNode: props.toggleNode,
+  };
 
   return (
     <div
-      id={'input ' + props.serial}
+      id={'OUTPUT ' + props.serial}
       style={{ top: props.y, left: props.x, backgroundColor: out ? 'red' : 'black' }}
       className="output"
       draggable={hovered ? true : false}
@@ -527,7 +699,7 @@ function OUTPUT(props) {
       onMouseLeave={() => setHovered(false)}
       onContextMenu={handleDelete}
     >
-      <Node.Input {...Aprops} endLine={props.endLine} nodes={props.nodes} setNodes={props.setNodes} />
+      <Node.Input {...Aprops} endLine={props.endLine} />
     </div>
   );
 }
