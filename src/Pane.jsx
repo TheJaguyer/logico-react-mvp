@@ -13,6 +13,8 @@ export default function Pane(props) {
         setLines={props.setLines}
         serial={props.serial}
         setSerial={props.setSerial}
+        saveChange={props.saveChange}
+        setSaveChange={props.setSaveChange}
       />
     </div>
   );

@@ -8,12 +8,9 @@ export default function Workspace(props) {
   const [nodeChange, setNodeChange] = useState(false);
   const nodes = useRef({});
 
-  // useEffect(() => {
-  //   const interval = setInterval(() => {
-  //     setNodeChange((prev) => !prev);
-  //   }, 500);
-  //   return () => clearInterval(interval);
-  // }, []);
+  useEffect(() => {
+    nodes.current = {};
+  }, [props.saveChange]);
 
   /* ========== Functions for Drag and Drop features ========== */
 

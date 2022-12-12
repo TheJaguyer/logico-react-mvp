@@ -96,6 +96,12 @@ body {
   align-items: center;
 }
 
+.bottom {
+  display: flex;
+  flex-flow: column nowrap;
+  align-items: center;
+}
+
 .challenge {
   display: flex;
   flex-flow: column nowrap;
@@ -114,6 +120,10 @@ body {
 
 button {
   width: 80px;
+}
+
+input {
+  width: 150px;
 }
 
 .choice {

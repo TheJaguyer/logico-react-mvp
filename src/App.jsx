@@ -10,6 +10,8 @@ function App() {
   const [saveChange, setSaveChange] = useState(false);
 
   var all = {
+    saveChange,
+    setSaveChange,
     pieces,
     setPieces,
     serial,
