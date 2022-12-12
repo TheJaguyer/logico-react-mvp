@@ -5,23 +5,15 @@ import TempLine from './work-comps/TempLine.jsx';
 
 export default function Workspace(props) {
   const [newLine, setNewLine] = useState(false);
-  const [readySave, setReadySave] = useState(false);
-  const [load, setLoad] = useState(false);
   const [nodeChange, setNodeChange] = useState(false);
   const nodes = useRef({});
 
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setNodeChange((prev) => !prev);
-    }, 1000);
-    return () => clearInterval(interval);
-  }, []);
-
-  useEffect(() => {
-    props.setPieces([...props.pieces]);
-    props.setSerial(props.serial);
-    props.setLines([...props.lines]);
-  }, [props.saveChange]);
+  // useEffect(() => {
+  //   const interval = setInterval(() => {
+  //     setNodeChange((prev) => !prev);
+  //   }, 500);
+  //   return () => clearInterval(interval);
+  // }, []);
 
   /* ========== Functions for Drag and Drop features ========== */
 
@@ -67,8 +59,8 @@ export default function Workspace(props) {
 
   /* ========== Functions for Pieces ========== */
 
-  function movePiece(props, X, Y) {
-    let moved = JSON.parse(props);
+  function movePiece(propsCheck, X, Y) {
+    let moved = JSON.parse(propsCheck);
     moved.x = X;
     moved.y = Y;
     props.setPieces((prev) => [...prev.map((item) => (item.serial === moved.serial ? moved : item))]);
@@ -120,12 +112,6 @@ export default function Workspace(props) {
       setNewLine(false);
     } else {
       setNewLine(false);
-    }
-  }
-
-  function handleEnter(e) {
-    if (e.target.id === 'workspace') {
-      setLoad((prev) => !prev);
     }
   }
 
@@ -193,7 +179,7 @@ export default function Workspace(props) {
             return <Gates.XOR key={Date.now() + index} {...item} {...gateProps} />;
           case 'INPUT':
             addNode('output ' + item.serial);
-            return <Gates.INPUT key={Date.now() + index} {...item} {...gateProps} />;
+            return <Gates.INPUT key={Date.now() + index} {...item} {...gateProps} setNodeChange={setNodeChange} />;
           case 'OUTPUT':
             addNode('A input ' + item.serial);
             return <Gates.OUTPUT key={Date.now() + index} {...item} {...gateProps} />;

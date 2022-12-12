@@ -627,6 +627,8 @@ function INPUT(props) {
   function handleClick() {
     setOut((prev) => !prev);
     props.setNode(outNode, out);
+    setTimeout(() => props.setNodeChange((prev) => !prev), 10);
+    setTimeout(() => props.setNodeChange((prev) => !prev), 20);
   }
 
   return (

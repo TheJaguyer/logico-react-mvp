@@ -8,24 +8,20 @@ function App() {
   const [serial, setSerial] = useState(0);
   const [lines, setLines] = useState([]);
   const [saveChange, setSaveChange] = useState(false);
+
+  var all = {
+    pieces,
+    setPieces,
+    serial,
+    setSerial,
+    lines,
+    setLines,
+  };
+
   return (
     <div className="App">
-      <Workspace
-        pieces={pieces}
-        setPieces={setPieces}
-        lines={lines}
-        setLines={setLines}
-        serial={serial}
-        setSerial={setSerial}
-      />
-      <Pane
-        pieces={pieces}
-        setPieces={setPieces}
-        lines={lines}
-        setLines={setLines}
-        serial={serial}
-        setSerial={setSerial}
-      />
+      <Workspace {...all} />
+      <Pane {...all} />
     </div>
   );
 }
