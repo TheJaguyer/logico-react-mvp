@@ -3,15 +3,29 @@ import { useState } from 'react';
 import Pane from './Pane.jsx';
 import Workspace from './Workspace.jsx';
 
-const startData = { pieces: [], serial: 0, lines: [] };
-
 function App() {
-  const [data, setData] = useState(startData);
+  const [pieces, setPieces] = useState([]);
+  const [serial, setSerial] = useState(0);
+  const [lines, setLines] = useState([]);
   const [saveChange, setSaveChange] = useState(false);
   return (
     <div className="App">
-      <Workspace data={data} setData={setData} />
-      <Pane setData={setData} data={data} setSaveChange={setSaveChange} />
+      <Workspace
+        pieces={pieces}
+        setPieces={setPieces}
+        lines={lines}
+        setLines={setLines}
+        serial={serial}
+        setSerial={setSerial}
+      />
+      <Pane
+        pieces={pieces}
+        setPieces={setPieces}
+        lines={lines}
+        setLines={setLines}
+        serial={serial}
+        setSerial={setSerial}
+      />
     </div>
   );
 }

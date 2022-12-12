@@ -6,7 +6,14 @@ export default function Pane(props) {
     <div className="pane">
       <div className="title main-title">Logico</div>
       <Options />
-      <Bottom setData={props.setData} data={props.data} setSaveChange={props.setSaveChange} />
+      <Bottom
+        pieces={props.pieces}
+        setPieces={props.setPieces}
+        lines={props.lines}
+        setLines={props.setLines}
+        serial={props.serial}
+        setSerial={props.setSerial}
+      />
     </div>
   );
 }

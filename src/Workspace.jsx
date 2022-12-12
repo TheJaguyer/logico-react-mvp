@@ -4,9 +4,6 @@ import Line from './work-comps/Line.jsx';
 import TempLine from './work-comps/TempLine.jsx';
 
 export default function Workspace(props) {
-  const [pieces, setPieces] = useState([...props.data.pieces]);
-  const [serial, setSerial] = useState(props.data.serial);
-  const [lines, setLines] = useState([...props.data.lines]);
   const [newLine, setNewLine] = useState(false);
   const [readySave, setReadySave] = useState(false);
   const [load, setLoad] = useState(false);
@@ -20,11 +17,10 @@ export default function Workspace(props) {
     return () => clearInterval(interval);
   }, []);
 
-  useEffect(() => props.setData({ pieces: pieces, serial: serial, lines: lines }), [pieces, serial, lines]);
   useEffect(() => {
-    setPieces([...props.data.pieces]);
-    setSerial(props.data.serial);
-    setLines([...props.data.lines]);
+    props.setPieces([...props.pieces]);
+    props.setSerial(props.serial);
+    props.setLines([...props.lines]);
   }, [props.saveChange]);
 
   /* ========== Functions for Drag and Drop features ========== */
@@ -62,7 +58,7 @@ export default function Workspace(props) {
   }
 
   function connectNodes() {
-    for (let line of lines) {
+    for (let line of props.lines) {
       setNode(line.endNode, nodes.current[line.startNode]);
     }
   }
@@ -75,20 +71,20 @@ export default function Workspace(props) {
     let moved = JSON.parse(props);
     moved.x = X;
     moved.y = Y;
-    setPieces((prev) => [...prev.map((item) => (item.serial === moved.serial ? moved : item))]);
+    props.setPieces((prev) => [...prev.map((item) => (item.serial === moved.serial ? moved : item))]);
   }
 
   function removePiece(serial) {
-    setPieces((prev) => [...prev.filter((item) => item.serial != serial)]);
+    props.setPieces((prev) => [...prev.filter((item) => item.serial != serial)]);
   }
 
   function removeLine(serial) {
-    setLines((prev) => [...prev.filter((item) => item.serial != serial)]);
+    props.setLines((prev) => [...prev.filter((item) => item.serial != serial)]);
   }
 
   function addPiece(type, x, y) {
-    setPieces((prev) => [...prev, { name: type, x: x, y: y, serial: serial }]);
-    setSerial((prev) => prev + 1);
+    props.setPieces((prev) => [...prev, { name: type, x: x, y: y, serial: props.serial }]);
+    props.setSerial((prev) => prev + 1);
   }
 
   /* ========== Functions for Lines ========== */
@@ -97,8 +93,8 @@ export default function Workspace(props) {
     if (e.target.id.includes('output')) {
       let X = e.pageX;
       let Y = e.pageY;
-      setNewLine({ startNode: e.target.id, x: X, y: Y, serial: `line ${serial}` });
-      setSerial((prev) => prev + 1);
+      setNewLine({ startNode: e.target.id, x: X, y: Y, serial: `line ${props.serial}` });
+      props.setSerial((prev) => prev + 1);
     }
   }
 
@@ -120,7 +116,7 @@ export default function Workspace(props) {
         endNode: e.target.id,
         serial: newLine.serial,
       };
-      setLines((prev) => [...prev, finalLine]);
+      props.setLines((prev) => [...prev, finalLine]);
       setNewLine(false);
     } else {
       setNewLine(false);
@@ -141,7 +137,7 @@ export default function Workspace(props) {
     addNode,
     setNode,
     removePiece,
-    lines,
+    lines: props.lines,
   };
 
   return (
@@ -155,7 +151,7 @@ export default function Workspace(props) {
       onMouseUp={(e) => endLine(e)}
       onContextMenu={(e) => e.preventDefault()}
     >
-      {pieces.map((item, index) => {
+      {props.pieces.map((item, index) => {
         switch (item.name) {
           case 'AND':
             addNode('A input ' + item.serial);
@@ -204,8 +200,8 @@ export default function Workspace(props) {
         }
       })}
       <svg className="svg">
-        {lines.map((item, index) => (
-          <Line key={Date.now() + index + 'line'} {...item} remove={removeLine} pieces={pieces} nodes={nodes} />
+        {props.lines.map((item, index) => (
+          <Line key={Date.now() + index + 'line'} {...item} remove={removeLine} pieces={props.pieces} nodes={nodes} />
         ))}
         {newLine ? <TempLine {...newLine} /> : null}
       </svg>
