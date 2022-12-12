@@ -619,7 +619,7 @@ function INPUT(props) {
   const Outprops = {
     on: out,
     hovered: hovered,
-    pos: [14, 14],
+    pos: [30, 14],
     serial: outNode,
     nodes: props.nodes,
   };
@@ -627,10 +627,6 @@ function INPUT(props) {
   function handleClick() {
     setOut((prev) => !prev);
     props.setNode(outNode, out);
-  }
-
-  function triggerUpdate() {
-    props.setCount((prev) => prev + 1);
   }
 
   return (
@@ -644,8 +640,7 @@ function INPUT(props) {
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
       onContextMenu={handleDelete}
-      onMouseDown={handleClick}
-      onMouseUp={triggerUpdate}
+      onClick={handleClick}
     >
       <Node.Output {...Outprops} startLine={props.startLine} />
     </div>
@@ -681,7 +676,7 @@ function OUTPUT(props) {
     on: A,
     set: setA,
     hovered: hovered,
-    pos: [14, 14],
+    pos: [-3, 30],
     serial: nodeA,
     nodes: props.nodes,
     toggleNode: props.toggleNode,

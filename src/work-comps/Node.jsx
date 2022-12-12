@@ -1,14 +1,8 @@
 function Input(props) {
-  function flip() {
-    console.log(`clicked node ${props.serial}`);
-    props.toggleNode(props.serial);
-    props.set((prev) => !prev);
-  }
   return (
     <div
       id={props.serial}
       className="node"
-      // onClick={flip}
       style={{
         left: props.pos[0] - 5,
         top: props.pos[1] - 5,

@@ -31,7 +31,7 @@ export default function Line(props) {
       y1={y1}
       x2={x2}
       y2={y2}
-      style={{ stroke: props.nodes.current[props.startNode] ? 'red' : 'gray', strokeWidth: hovered ? '5px' : '2px' }}
+      style={{ stroke: on ? 'red' : 'gray', strokeWidth: hovered ? '5px' : '2px' }}
       onMouseLeave={() => setHovered(false)}
       onMouseEnter={() => setHovered(true)}
       onContextMenu={handleDelete}

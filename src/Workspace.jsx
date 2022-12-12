@@ -8,8 +8,15 @@ export default function Workspace() {
   const [serial, setSerial] = useState(0);
   const [lines, setLines] = useState([]);
   const [newLine, setNewLine] = useState(false);
-  const [count, setCount] = useState(0);
+  const [nodeChange, setNodeChange] = useState(false);
   const nodes = useRef({});
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setNodeChange((prev) => !prev);
+    }, 500);
+    return () => clearInterval(interval);
+  }, []);
 
   /* ========== Functions for Drag and Drop features ========== */
 
@@ -47,7 +54,6 @@ export default function Workspace() {
 
   function connectNodes() {
     for (let line of lines) {
-      console.log(`checking line ${line.serial}`);
       setNode(line.endNode, nodes.current[line.startNode]);
     }
   }
@@ -175,7 +181,7 @@ export default function Workspace() {
             return <Gates.XOR key={Date.now() + index} {...item} {...gateProps} />;
           case 'INPUT':
             addNode('output ' + item.serial);
-            return <Gates.INPUT key={Date.now() + index} {...item} {...gateProps} setCount={setCount} />;
+            return <Gates.INPUT key={Date.now() + index} {...item} {...gateProps} />;
           case 'OUTPUT':
             addNode('A input ' + item.serial);
             return <Gates.OUTPUT key={Date.now() + index} {...item} {...gateProps} />;

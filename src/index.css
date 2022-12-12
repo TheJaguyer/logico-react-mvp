@@ -83,21 +83,46 @@ body {
   flex-flow: column nowrap;
   align-items: center;
   flex: 1;
+  gap: 1rem;
 }
 
+.classic {
+  display: flex;
+  flex-flow: column nowrap;
+  align-items: center;
+}
+
+.challenge {
+  display: flex;
+  flex-flow: column nowrap;
+  align-items: center;
+  gap: 1rem;
+}
+.description {
+  text-align: center;
+}
 .options {
   display: flex;
   flex-flow: column nowrap;
+  align-items: center;
   flex: 1;
 }
 
+button {
+  width: 80px;
+}
+
 .choice {
-  cursor: grab;
+  cursor: pointer;
   border: 1px solid rgba(0, 0, 0, 0);
+  background-color: rgb(58, 58, 58);
+  border-radius: 5px;
 }
 
 .choice:hover {
   border: 1px solid black;
+
+  color: aquamarine;
 }
 
 .title {
