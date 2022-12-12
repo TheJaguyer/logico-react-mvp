@@ -608,7 +608,7 @@ function INPUT(props) {
   }
 
   function handleDelete() {
-    props.remove(props.serial);
+    props.removePiece(props.serial);
   }
 
   useEffect(() => {
@@ -669,7 +669,7 @@ function OUTPUT(props) {
   }
 
   function handleDelete() {
-    props.remove(props.serial);
+    props.removePiece(props.serial);
   }
 
   const Aprops = {

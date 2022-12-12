@@ -3,20 +3,29 @@ import Gates from './work-comps/Gates.jsx';
 import Line from './work-comps/Line.jsx';
 import TempLine from './work-comps/TempLine.jsx';
 
-export default function Workspace() {
-  const [pieces, setPieces] = useState([]);
-  const [serial, setSerial] = useState(0);
-  const [lines, setLines] = useState([]);
+export default function Workspace(props) {
+  const [pieces, setPieces] = useState([...props.data.pieces]);
+  const [serial, setSerial] = useState(props.data.serial);
+  const [lines, setLines] = useState([...props.data.lines]);
   const [newLine, setNewLine] = useState(false);
+  const [readySave, setReadySave] = useState(false);
+  const [load, setLoad] = useState(false);
   const [nodeChange, setNodeChange] = useState(false);
   const nodes = useRef({});
 
   useEffect(() => {
     const interval = setInterval(() => {
       setNodeChange((prev) => !prev);
-    }, 500);
+    }, 1000);
     return () => clearInterval(interval);
   }, []);
+
+  useEffect(() => props.setData({ pieces: pieces, serial: serial, lines: lines }), [pieces, serial, lines]);
+  useEffect(() => {
+    setPieces([...props.data.pieces]);
+    setSerial(props.data.serial);
+    setLines([...props.data.lines]);
+  }, [props.saveChange]);
 
   /* ========== Functions for Drag and Drop features ========== */
 
@@ -118,6 +127,12 @@ export default function Workspace() {
     }
   }
 
+  function handleEnter(e) {
+    if (e.target.id === 'workspace') {
+      setLoad((prev) => !prev);
+    }
+  }
+
   /* ========== Rendering ========== */
 
   const gateProps = {
@@ -131,6 +146,7 @@ export default function Workspace() {
 
   return (
     <div
+      id="workspace"
       className="workspace"
       onDragOver={(e) => handleDragOver(e)}
       onDrop={(e) => handleDrop(e)}
